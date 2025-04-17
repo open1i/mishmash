@@ -1,0 +1,74 @@
+<!-- 文件名：dom2.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>DOM2 级事件模型示例</title>
+  <style>
+    #btn {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>DOM2 级事件模型演示</h1>
+  <button id="btn">点击我</button>
+
+  <script>
+    /*
+     * ---------------------------
+     * DOM2 级事件模型简介
+     * ---------------------------
+     * DOM2（DOM Level 2 Events）是 W3C 规范中的一部分，
+     * 引入了一种标准的事件注册模型：addEventListener。
+     *
+     * 它的主要特性包括：
+     * 1. 支持事件捕获和事件冒泡两个阶段。
+     * 2. 同一个事件类型可以绑定多个监听器，互不覆盖。
+     * 3. 事件可以被移除：通过 removeEventListener。
+     * 4. 提供更丰富的事件对象（Event 对象）和控制能力。
+     *
+     * 语法：
+     *   element.addEventListener(type, listener, useCapture);
+     *   - type: 事件类型，如 'click'、'keydown'
+     *   - listener: 事件处理函数
+     *   - useCapture: 是否使用捕获阶段，默认为 false（即冒泡阶段）
+     *
+     * 注意：DOM0（如 element.onclick）只允许一个处理函数，后绑定的会覆盖前一个。
+     */
+
+    const btn = document.getElementById('btn');
+
+    // 第一个事件处理函数：显示提示
+    btn.addEventListener('click', function () {
+      alert('按钮被点击了！');
+    });
+
+    // 第二个事件处理函数：打印日志
+    btn.addEventListener('click', function () {
+      console.log('[日志] 用户点击了按钮');
+    });
+
+    // 第三个事件处理函数：模拟埋点统计
+    btn.addEventListener('click', function () {
+      console.log('[埋点] 发送按钮点击埋点数据...');
+    });
+
+    /*
+     * 好处总结：
+     * ✅ 支持多个事件处理函数，不互相覆盖，增强模块化能力。
+     * ✅ 不同逻辑可以分别注册，彼此独立，降低耦合。
+     * ✅ 支持事件捕获与冒泡阶段，适合做事件委托、权限控制等。
+     */
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>事件委托缺点示例（待修复）</title>
+  <style>
+    .container {
+      padding: 20px;
+      border: 1px solid #ccc;
+    }
+
+    .item {
+      padding: 10px;
+      margin: 5px;
+      background-color: #f0f0f0;
+      cursor: pointer;
+    }
+
+    .item:hover {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>事件委托缺点演示（仅展示问题）</h2>
+
+  <div class="container" id="container">
+    <div class="item" data-type="button">按钮 <span>(图标)</span></div>
+    <div class="item" data-type="link">链接 <span>(图标)</span></div>
+    <div class="item" data-type="image">图片 <span>(图标)</span></div>
+  </div>
+
+  <button id="addItem">添加元素</button>
+  <button id="togglePermission">切换权限</button>
+
+  <script>
+    const container = document.getElementById('container');
+    const addItemBtn = document.getElementById('addItem');
+    const toggleBtn = document.getElementById('togglePermission');
+
+    let isAdmin = false; // 当前是否有权限
+
+    // ❌ 缺点一：事件冒泡受限，例如 focus 事件不冒泡
+    container.addEventListener('focus', function (e) {
+      console.log('不会触发，因为 focus 不冒泡');
+    });
+
+    // ❌ 缺点二：e.target 可能不是 .item，而是嵌套的子元素
+    container.addEventListener('click', function (e) {
+      // 如果点击的是 <span> 而不是 .item，会导致 target 错误
+      let target = e.target;
+
+      // ✅ 修复方式（待注释展示）：使用 while 往上找最近的 .item 元素
+      // while (target && !target.classList.contains('item')) {
+      //   target = target.parentElement;
+      // }
+
+      if (!target.classList.contains('item')) {
+        console.warn('点击的不是 .item，会导致逻辑失败');
+        return;
+      }
+
+      const type = target.dataset.type;
+
+      // ❌ 缺点五：权限判断逻辑混在一起导致委托逻辑复杂
+      if (type === 'button') {
+        if (!isAdmin) {
+          alert('没有权限点击按钮');
+          return;
+        }
+        alert('按钮点击成功');
+      } else {
+        alert(`点击了 ${type}`);
+      }
+    });
+
+    // ❌ 缺点三：DOM 动态增删频繁时可能混乱
+    addItemBtn.addEventListener('click', () => {
+      const newItem = document.createElement('div');
+      newItem.className = 'item';
+      newItem.dataset.type = 'link';
+      newItem.innerHTML = '动态添加的链接 <span>(图标)</span>';
+      container.appendChild(newItem);
+
+      // ✅ 修复建议（待注释展示）：添加后应设置必要状态，或绑定个别事件防止副作用
+    });
+
+    // ❌ 缺点四：事件委托不适合 drag 事件，因 dragstart 不冒泡
+    container.addEventListener('dragstart', function (e) {
+      // 这里永远不会触发，除非 item 本身绑定了 dragstart
+      console.warn('dragstart 委托无效');
+    });
+
+    // 设置 item 可拖拽（但 dragstart 无效）
+    document.querySelectorAll('.item').forEach(item => {
+      item.setAttribute('draggable', 'true');
+    });
+
+    // ❌ 缺点五：权限控制耦合在事件委托中，逻辑臃肿
+    toggleBtn.addEventListener('click', () => {
+      isAdmin = !isAdmin;
+      alert('权限已切换为：' + (isAdmin ? '管理员' : '普通用户'));
+    });
+  </script>
+
+  <p><strong>说明：</strong>本示例用于展示事件委托的几类缺点。代码中暂未应用修复策略，仅作为问题示例。</p>
+</body>
+
+</html>

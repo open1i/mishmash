@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三种事件模型示例</title>
+  <style>
+    #dom0,
+    #ie,
+    #dom2 {
+      width: 200px;
+      height: 50px;
+      margin: 10px;
+      padding: 10px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+    }
+
+    #dom0 {
+      background-color: lightgreen;
+    }
+
+    #ie {
+      background-color: lightyellow;
+    }
+
+    #dom2 {
+      background-color: lightpink;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="ie">IE事件模型</div>
+  <div id="dom0">DOM 0级事件模型</div>
+  <div id="dom2">DOM 2级事件模型</div>
+
+  <!-- 新增的DOM 0级事件模型示例 -->
+  <form>
+    <input type="checkbox" id="myCheck" onmouseover="console.log('鼠标悬停')" onclick="console.log('DOM 0级事件模型 - 点击事件')" />
+    <label for="myCheck">DOM 0级事件模型示例</label>
+  </form>
+
+  <script>
+    // IE事件模型
+    // 特点：
+    // 1. 使用attachEvent方法绑定事件
+    // 2. 事件名前需要加on（如onclick）
+    // 3. 只支持冒泡阶段，不支持捕获阶段
+    // 4. this指向window对象
+    const ie = document.getElementById('ie');
+    if (ie.attachEvent) {
+      ie.attachEvent('onclick', function () {
+        console.log('IE事件模型触发');
+      });
+    }
+
+    // DOM 0级事件模型
+    // 特点：
+    // 1. 直接通过onclick属性赋值
+    // 2. 只能绑定一个事件处理程序
+    // 3. 没有捕获和冒泡阶段的概念
+    const dom0 = document.getElementById('dom0');
+    dom0.onclick = function () {
+      console.log('DOM 0级事件模型触发');
+    };
+
+    // DOM 2级事件模型
+    // 特点：
+    // 1. 使用addEventListener方法绑定事件
+    // 2. 支持同时绑定多个事件处理程序
+    // 3. 可以控制捕获和冒泡阶段（通过第三个参数）
+    // 4. this指向触发事件的元素
+
+    // DOM 2级事件模型
+    const dom2 = document.getElementById('dom2');
+
+    // 1. 使用addEventListener方法绑定事件
+    dom2.addEventListener('click', function () {
+      console.log('DOM 2级事件模型 - 使用addEventListener绑定事件');
+    });
+
+    // 2. 支持同时绑定多个事件处理程序
+    dom2.addEventListener('click', function () {
+      console.log('DOM 2级事件模型 - 第一个事件处理程序');
+    });
+    dom2.addEventListener('click', function () {
+      console.log('DOM 2级事件模型 - 第二个事件处理程序');
+    });
+
+    // 3. 可以控制捕获和冒泡阶段（通过第三个参数）
+    dom2.addEventListener('click', function () {
+      console.log('DOM 2级事件模型 - 捕获阶段');
+    }, true); // 第三个参数为true，表示在捕获阶段触发
+    dom2.addEventListener('click', function () {
+      console.log('DOM 2级事件模型 - 冒泡阶段');
+    }, false); // 第三个参数为false，表示在冒泡阶段触发
+
+    // 4. this指向触发事件的元素
+    dom2.addEventListener('click', function () {
+      console.log('DOM 2级事件模型 - this指向:', this);
+    });
+  </script>
+</body>
+
+</html>

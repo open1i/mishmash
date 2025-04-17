@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>事件委托复杂性示例</title>
+  <style>
+    .container {
+      padding: 20px;
+      border: 1px solid #ccc;
+    }
+
+    .item {
+      padding: 10px;
+      margin: 5px;
+      background-color: #f0f0f0;
+      cursor: pointer;
+    }
+
+    .item:hover {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>事件委托复杂性示例</h2>
+  <div class="container" id="container">
+    <div class="item" data-type="button">按钮</div>
+    <div class="item" data-type="link">链接</div>
+    <div class="item" data-type="image">图片</div>
+  </div>
+
+  <script>
+    const container = document.getElementById('container');
+
+    // 事件委托绑定在父元素 container 上
+    container.addEventListener('click', function (event) {
+      const target = event.target;
+
+      // 判断是否点击的是 .item 元素
+      if (target.classList.contains('item')) {
+        const type = target.dataset.type;
+
+        // 根据不同子元素的类型执行不同的逻辑
+        switch (type) {
+          case 'button':
+            console.log('按钮被点击，执行按钮相关逻辑');
+            alert('按钮被点击');
+            break;
+          case 'link':
+            console.log('链接被点击，执行链接相关逻辑');
+            window.location.href = 'https://example.com';
+            break;
+          case 'image':
+            console.log('图片被点击，执行图片相关逻辑');
+            target.style.border = '2px solid red';
+            break;
+          default:
+            console.log('未知类型');
+        }
+      }
+    });
+
+    // 改进建议
+
+  </script>
+</body>
+
+</html>

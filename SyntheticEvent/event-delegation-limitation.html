@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>事件委托的缺点示例</title>
+  <style>
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 10px;
+      margin: 5px;
+      background-color: #f0f0f0;
+      cursor: pointer;
+    }
+
+    li:hover {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>事件委托的缺点示例</h2>
+  <ul id="list">
+    <li data-id="1">项目 1</li>
+    <li data-id="2">项目 2</li>
+    <li data-id="3">项目 3</li>
+  </ul>
+
+  <script>
+    const list = document.getElementById('list');
+
+    // 事件委托：将事件绑定在父元素 ul 上
+    list.addEventListener('click', function (event) {
+      const target = event.target;
+
+      // 判断是否点击的是 li 元素
+      if (target.tagName.toLowerCase() === 'li') {
+        const id = target.dataset.id;
+        console.log(`点击了项目 ${id}`);
+      }
+    });
+
+    // 动态添加一个阻止事件冒泡的 li 元素
+    const newLi = document.createElement('li');
+    newLi.textContent = '项目 4（阻止冒泡）';
+    newLi.dataset.id = '4';
+    newLi.addEventListener('click', function (event) {
+      event.stopPropagation(); // 阻止事件冒泡
+      console.log('项目 4 被点击，但事件不会冒泡到父元素');
+    });
+    list.appendChild(newLi);
+  </script>
+</body>
+
+</html>

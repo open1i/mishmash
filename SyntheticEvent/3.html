@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>事件委托的缺点示例（增强版）</title>
+  <style>
+    .container {
+      padding: 20px;
+      border: 1px solid #ccc;
+    }
+
+    .item {
+      padding: 10px;
+      margin: 5px;
+      background-color: #f0f0f0;
+      cursor: pointer;
+    }
+
+    .item:hover {
+      background-color: #ddd;
+    }
+
+    .item span {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>事件委托的缺点示例（增强版）</h2>
+
+  <div class="container" id="container">
+    <div class="item" data-type="button">按钮 <span>(嵌套结构)</span></div>
+    <div class="item" data-type="link">链接</div>
+    <div class="item" data-type="image">图片</div>
+  </div>
+
+  <hr />
+  <button id="add-item">添加元素（缺点三演示）</button>
+  <button id="toggle-mode">切换权限（缺点五演示）</button>
+
+  <script>
+    const container = document.getElementById('container');
+
+    let isAdmin = false;
+
+    // 🧠 缺点二：target 不准确，点击子元素可能不符合预期
+    container.addEventListener('click', function (e) {
+      let target = e.target;
+
+      // 修复方式：向上查找最近的 .item 父级
+      while (target && !target.classList.contains('item')) {
+        target = target.parentElement;
+      }
+
+      if (!target) return;
+
+      // ❗️注意：如果 target 为 null 或不是 item，会导致逻辑错误
+      const type = target.dataset.type;
+
+      // 🧠 缺点五：权限判断逻辑耦合进事件委托处理
+      if (type === 'button' && !isAdmin) {
+        alert('请先登录管理员再点击按钮');
+        return;
+      }
+
+      alert(`你点击了类型为：${type} 的元素`);
+    });
+
+    // 🧠 缺点三：DOM 结构频繁变化 + 委托事件持续存在 => 状态混乱
+    document.getElementById('add-item').addEventListener('click', () => {
+      const newItem = document.createElement('div');
+      newItem.className = 'item';
+      newItem.dataset.type = 'button';
+      newItem.innerHTML = '新按钮 <span>(动态创建)</span>';
+      container.appendChild(newItem);
+    });
+
+    // 🧠 缺点四：拖拽场景中事件对象不稳定
+    // 模拟简单的拖拽逻辑：给 item 添加拖拽事件
+    // 这种场景不推荐使用委托，因为 drag 事件行为本身就不冒泡
+    container.addEventListener('dragstart', (e) => {
+      console.log('dragstart target:', e.target);
+    });
+
+    // 直接给每个 item 绑定更合适
+    function setupDraggableItems() {
+      const items = container.querySelectorAll('.item');
+      items.forEach(item => {
+        item.setAttribute('draggable', 'true');
+      });
+    }
+
+    setupDraggableItems();
+
+    // 🧠 缺点五：细粒度权限控制混入委托逻辑，判断复杂、职责不清
+    document.getElementById('toggle-mode').addEventListener('click', () => {
+      isAdmin = !isAdmin;
+      alert(isAdmin ? '管理员模式已启用' : '管理员模式已关闭');
+    });
+  </script>
+
+  <hr />
+  <p><strong>说明：</strong></p>
+  <ul>
+    <li>点击按钮“添加元素”后，动态添加 .item 节点，事件委托仍生效（展示缺点三）</li>
+    <li>点击“.item”子元素中的 span（红色文本）时，target 会是 span 而非 item（展示缺点二）</li>
+    <li>设置 draggable 属性，展示事件委托不适合 drag 类型事件（缺点四）</li>
+    <li>点击“切换权限”按钮切换管理员模式，再点击“按钮”验证权限控制问题（缺点五）</li>
+  </ul>
+
+</body>
+
+</html>

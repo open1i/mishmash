@@ -1,0 +1,111 @@
+<!-- 文件名：event-delegation-auth.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>事件委托 + 权限控制 示例</title>
+  <style>
+    .actions {
+      margin-top: 20px;
+    }
+
+    .actions button {
+      margin-right: 10px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .view {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .edit {
+      background-color: #FFC107;
+      color: black;
+    }
+
+    .delete {
+      background-color: #F44336;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>事件委托 + 权限控制 示例</h2>
+  <div class="actions" id="actionContainer">
+    <button data-action="view" class="view">查看</button>
+    <button data-action="edit" class="edit">编辑</button>
+    <button data-action="delete" class="delete">删除</button>
+  </div>
+
+  <script>
+    /*
+     * ---------------------------
+     * 事件委托简介（Event Delegation）
+     * ---------------------------
+     * 事件委托是指将事件绑定在父元素上，通过事件冒泡机制，
+     * 捕捉子元素的事件行为，避免每个子元素都绑定事件。
+     *
+     * 优点：
+     * 1. 性能更优：只绑定一个事件监听器。
+     * 2. 支持动态添加的子元素。
+     * 3. 结构更清晰，便于集中管理。
+     *
+     * ---------------------------
+     * 权限控制模拟
+     * ---------------------------
+     * 假设后端返回了当前用户可执行的操作权限：
+     */
+    const userPermissions = {
+      view: true,
+      edit: false,
+      delete: false
+    };
+
+    const container = document.getElementById('actionContainer');
+
+    // 事件委托绑定在父元素 container 上
+    container.addEventListener('click', function (event) {
+      const target = event.target;
+
+      // 判断是否点击的是 button 元素
+      if (target.tagName.toLowerCase() === 'button') {
+        const action = target.dataset.action;
+
+        // 权限控制判断
+        if (!userPermissions[action]) {
+          alert(`你没有【${action}】操作权限！`);
+          return;
+        }
+
+        // 执行对应操作
+        switch (action) {
+          case 'view':
+            alert('正在查看内容...');
+            break;
+          case 'edit':
+            alert('正在编辑内容...');
+            break;
+          case 'delete':
+            alert('你确定要删除吗？');
+            break;
+        }
+
+        console.log(`[日志] 用户点击了 ${action}`);
+      }
+    });
+
+    /*
+     * ✅ 该示例使用 DOM2 的 addEventListener 注册事件。
+     * ✅ 利用事件冒泡实现事件委托。
+     * ✅ 结合用户权限控制进行交互限制。
+     */
+  </script>
+</body>
+
+</html>
