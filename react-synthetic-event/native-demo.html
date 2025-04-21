@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DOM2级事件流演示</title>
+  <style>
+    #container {
+      padding: 20px;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+    #grandparent {
+      padding: 40px;
+      background-color: #c0c0c0;
+    }
+    #parent {
+      padding: 30px;
+      background-color: #d0d0d0;
+    }
+    #child {
+      padding: 15px;
+      background-color: #a0a0a0;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h3>DOM2级事件流演示</h3>
+    
+    <div id="grandparent">
+      <div id="parent">
+        <div id="child">点击我测试事件流</div>
+      </div>
+    </div>
+    
+    <div>
+      <h4>测试说明：</h4>
+      <ol>
+        <li>点击灰色区域测试完整事件流</li>
+        <li>查看控制台输出的三个阶段顺序</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // 获取DOM元素
+    const grandparent = document.getElementById('grandparent');
+    const parent = document.getElementById('parent');
+    const child = document.getElementById('child');
+
+    // 祖父元素 - 捕获阶段
+    grandparent.addEventListener('click', function() {
+      console.log('%c1. 祖父元素捕获阶段', 'color: #FF5722; font-weight: bold');
+    }, true);
+
+    // 父元素 - 捕获阶段
+    parent.addEventListener('click', function() {
+      console.log('%c2. 父元素捕获阶段', 'color: #2196F3; font-weight: bold');
+    }, true);
+
+    // 子元素 - 目标阶段
+    child.addEventListener('click', function() {
+      console.log('%c3. 子元素目标阶段', 'color: #4CAF50; font-weight: bold');
+    });
+
+    // 父元素 - 冒泡阶段
+    parent.addEventListener('click', function() {
+      console.log('%c4. 父元素冒泡阶段', 'color: #2196F3');
+    });
+
+    // 祖父元素 - 冒泡阶段
+    grandparent.addEventListener('click', function() {
+      console.log('%c5. 祖父元素冒泡阶段', 'color: #FF5722');
+    });
+
+    // document级别事件
+    document.addEventListener('click', function() {
+      console.log('%c0. document捕获阶段', 'color: #9C27B0; font-weight: bold');
+    }, true);
+
+    document.addEventListener('click', function() {
+      console.log('%c6. document冒泡阶段', 'color: #9C27B0');
+    });
+
+    console.log('页面已加载，请点击灰色区域测试');
+  </script>
+</body>
+</html>

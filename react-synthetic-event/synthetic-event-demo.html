@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>React合成事件点击示例</title>
+  <style>
+    #container {
+      padding: 20px;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+    #parent {
+      padding: 30px;
+      background-color: #d0d0d0;
+      margin-bottom: 15px;
+    }
+    #child {
+      padding: 15px;
+      background-color: #a0a0a0;
+      cursor: pointer;
+    }
+  </style>
+  <script src="./react-synthetic-event.js"></script>
+</head>
+<body>
+  <div id="container">
+    <h3>React合成事件点击测试</h3>
+    
+    <div id="parent">
+      <div id="child">点击我测试事件冒泡</div>
+    </div>
+    
+    <div>
+      <h4>测试说明：</h4>
+      <ol>
+        <li>点击灰色区域测试事件冒泡</li>
+        <li>查看控制台输出对比合成/原生事件</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // 获取DOM元素
+    const parent = document.getElementById('parent');
+    const child = document.getElementById('child');
+
+    // 初始化事件系统
+    ReactEventSystem.init();
+
+    // 子元素点击事件 - 展示标准化事件属性
+    ReactEventSystem.on(child, 'click', function(e) {
+      console.group('子元素合成事件');
+      console.log('事件类型:', e.type);
+      console.log('目标元素:', e.target);
+      console.log('当前元素:', e.currentTarget);
+      console.log('鼠标坐标:', `(${e.clientX}, ${e.clientY})`);
+      console.groupEnd();
+      
+      // 测试阻止冒泡
+      // e.stopPropagation();
+    });
+
+    // 父元素点击事件 - 展示事件冒泡
+    ReactEventSystem.on(parent, 'click', function(e) {
+      console.log('父元素接收到冒泡事件');
+    });
+
+    // 原生事件对比
+    child.addEventListener('click', function(e) {
+      console.groupCollapsed('原生click事件');
+      console.log('target:', e.target);
+      console.log('srcElement:', e.srcElement);
+      console.log('which:', e.which);
+      console.groupEnd();
+    });
+    
+    console.log('页面已加载，请点击灰色区域测试');
+  </script>
+</body>
+</html>

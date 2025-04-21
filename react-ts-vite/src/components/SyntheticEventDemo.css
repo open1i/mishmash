@@ -1,0 +1,25 @@
+.event-demo-container {
+  padding: 20px;
+  border: 1px solid #646cff;
+  border-radius: 8px;
+  margin: 20px;
+}
+
+.parent-box {
+  padding: 30px;
+  background-color: #c09d9d;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.child-box {
+  padding: 15px;
+  background-color: #5ccace;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.child-box:hover {
+  background-color: #8f3d3d;
+}
